@@ -7,6 +7,10 @@
 * Developer: [Alberto Pettarin](http://www.albertopettarin.it/) ([contact](http://www.albertopettarin.it/contact.html))
 
 
+## Screenshot
+
+![Inkscape SVG => XHTML in Firefox](https://github.com/pettarin/ink2fxl/raw/master/screenshots/inkice.png "Inkscape SVG => XHTML in Firefox")
+
 
 ## Usage
 
