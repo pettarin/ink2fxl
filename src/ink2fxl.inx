@@ -1,0 +1,71 @@
+<inkscape-extension>
+  <_name>Export to FXL</_name>
+  <id>it.albertopettarin.ink2fxl</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">ink2fxl.py</dependency>
+  <param name="zzz1" type="notebook">
+    <page name="Export" _gui-text="Export">
+    <param name="outputformat" type="enum" _gui-text="Output format">
+        <_item value="vector">Vector: XHTML(+SVG)+CSS</_item>
+        <_item value="mixed">Mixed: XHTML+raster</_item>
+        <_item value="raster">Raster only</_item>
+      </param>
+      <param name="outputdirectory" type="string" _gui-text="Output directory">/tmp/</param>
+      <param name="exporthiddenlayers" type="boolean" _gui-text="Export hidden layers">true</param>
+      <param name="renameidattributes" type="boolean" _gui-text="Rename id attributes">false</param>
+      <param name="uselayerlabels" type="boolean" _gui-text="Use Inkscape layer label instead of id">true</param>
+      <!--<param name="gheuristic" type="boolean" _gui-text="Consider svg.g as a layer">false</param>-->
+    </page>
+    <page name="Raster" _gui-text="Raster">
+      <param name="rasterformat" type="enum" _gui-text="Raster format (NOTE: ignored)">
+        <_item value="png">PNG</_item>
+        <_item value="jpeg">JPEG</_item>
+      </param>
+      <param name="rasterlayerboundingbox" type="boolean" _gui-text="Crop layer to bounding box">true</param>
+      <param name="rasterimagesubdirectory" type="string" _gui-text="Output images in subdirectory"></param>
+    </page>
+    <page name="Vector" _gui-text="Vector">
+      <param name="outputxhtmlfile" type="string" _gui-text="Output XHTML file">index.xhtml</param>
+      <param name="outputcss" type="boolean" _gui-text="Output CSS in a separate file">true</param>
+      <param name="outputcssfile" type="string" _gui-text="Output CSS file">style.css</param>
+      <param name="includefiles" type="string" _gui-text="Reference CSS/JS files"></param>
+      <param name="explicitzindex" type="boolean" _gui-text="Explicit z-index">false</param>
+      <param name="insertplaceholders" type="boolean" _gui-text="Insert placeholders in XHTML code">false</param>
+    </page>
+    <page name="Page" _gui-text="Page">
+      <param name="pagetitle" type="string" _gui-text="Page title (%f=filename)">ink2fxl</param>
+      <param name="pageoffsettop" type="int" min="-10000" max="10000" _gui-text="Page offset top (px)">0</param>
+      <param name="pageoffsetleft" type="int" min="-10000" max="10000" _gui-text="Page offset left (px)">0</param>
+      <param name="pagebackgroundcolor" type="boolean" _gui-text="Page background-color">false</param>
+      <param name="pagebackgroundcolorstyle" type="string" _gui-text="Page background-color CSS"></param>
+      <param name="pageborder" type="boolean" _gui-text="Page border">true</param>
+      <param name="pageborderstyle" type="string" _gui-text="Page border CSS">black 5px solid</param>
+    </page>
+    <page name="Log" _gui-text="Log">
+      <param name="logfile" type="string" _gui-text="Write log to file"></param>
+      <param name="logdelete" type="boolean" _gui-text="Delete log after success">true</param>
+    </page>
+    <page name="Info" _gui-text="Info">
+      <param name="zzz2" type="description">
+ink2fxl
+
+Version
+  v0.0.1 2014-07-09
+  github.com/pettarin/ink2fxl/
+
+Author
+  Alberto Pettarin
+  alberto@albertopettarin.it
+      </param>
+    </page>
+  </param>
+  <effect>
+    <object-type>all</object-type>
+    <effects-menu>
+       <submenu _name="Export"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">ink2fxl.py</command>
+  </script>
+</inkscape-extension>
