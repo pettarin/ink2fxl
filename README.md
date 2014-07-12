@@ -197,3 +197,4 @@ on Debian Linux and Mac OS X.
 * The plugin concept has been inspired by [SAWS](https://code.google.com/p/saws/)
 * The SVG parser has been extended/refactored from [svg2css](https://github.com/shogo82148/svg2css)
 
+[![Analytics](https://ga-beacon.appspot.com/UA-52776738-1/ink2fxl)](http://www.albertopettarin.it)
