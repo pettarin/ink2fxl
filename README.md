@@ -44,7 +44,9 @@ In `raster` mode, only the raster (PNG) image of each layer is output.
 3. Open Extensions > Export > Export to FXL
 
 Note: if you plan to use the `mixed` or `raster` output formats,
-you might need to edit the `__inkscape_path = "inkscape"` line in file `options.py`.
+(and you want to export raster images to JPEG instead of PNG),
+you might need to edit the `__inkscape_path` (and `__convert_path`)
+lines in file `options.py`.
 You might need to install `python-lxml` before running the plugin.
 
 
@@ -54,7 +56,9 @@ You might need to install `python-lxml` before running the plugin.
 2. Run the `svgexporter.py` script
 
 Note: if you plan to use the `mixed` or `raster` output formats,
-you might need to edit the `__inkscape_path = "inkscape"` line in file `options.py`.
+(and you want to export raster images to JPEG instead of PNG),
+you might need to edit the `__inkscape_path` (and `__convert_path`)
+lines in file `options.py`.
 You might need to install `python-lxml` before running the plugin.
 
 The usage of the script is as follows:
@@ -185,9 +189,13 @@ See the file `misc/sample.conf` for an example.
 To export to `mixed` or `raster` format, you need Inkscape installed on your system.
 Edit the `__inkscape_path = "inkscape"` line in file `options.py`,
 according to the path where the inkscape executable is located on your system.
+Similarily, if you want JPEG output instead of PNG,
+you need `convert` (provided by Imagemagick) installed on your system,
+and edit the `__convert_path = "convert"` line in file `options.py`.
 
 The provided source files have been tested to work out-of-the-box
 on Debian Linux and Mac OS X.
+(Windows users: apologies but I do not have a Windows machine to test/debug.)
 
 
 ## Limitations and Missing Features 
