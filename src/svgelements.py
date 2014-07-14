@@ -4,12 +4,13 @@
 __license__     = 'MIT'
 __author__      = 'Alberto Pettarin (alberto@albertopettarin.it)'
 __copyright__   = '2014 Alberto Pettarin (alberto@albertopettarin.it)'
-__version__     = 'v0.0.1'
-__date__        = '2014-07-10'
+__version__     = 'v0.0.2'
+__date__        = '2014-07-14'
 __description__ = 'Parse a SVG document'
 
 ### BEGIN changelog ###
 #
+# 0.0.2 2014-07-14 Fixed old-style raise
 # 0.0.1 2014-07-10 Initial release, nearly verbatim from https://github.com/shogo82148/svg2css
 #
 ### END changelog ###
@@ -450,7 +451,7 @@ class SVGLength:
         else:
             m = SVGLength.__length_re.match(str(length))
             if (not m):
-                raise
+                raise TypeError("Bad length value: '%s'" % (str(length)))
             self.__length = float(m.group("length"))
             self.__unit = m.group("unit") or "px"
     
@@ -531,7 +532,7 @@ class SVGStyle(dict):
 class SVGTransform(list):
     class SVGBaseTransform:
         def toMatrix(self):
-            raise
+            raise TypeError("toMatrix can be called only on subclasses of SVGBaseTransform")
         
         def __mul__(self, a):
             return self.toMatrix() * a
@@ -560,7 +561,7 @@ class SVGTransform(list):
                 m = a.toMatrix()
                 return SVGTransform.SVGMatrix(m.a, m.b, m.c, m.d, m.e+self.x.px(), m.f+self.y.px())
             else:
-                raise
+                raise TypeError("Bad factor value: '%s'" % (str(a)))
         
         def toMatrix(self):
             return SVGTransform.SVGMatrix(1, 0, 0, 1, self.x, self.y)
@@ -596,7 +597,7 @@ class SVGTransform(list):
                     self.b * m.e + self.d * m.f + self.f
                 )
             else:
-                raise
+                raise TypeError("Bad factor value: '%s'" % (str(a)))
         
         def toMatrix(self):
             return self
@@ -650,7 +651,7 @@ class SVGTransform(list):
                     self.sy*m.f
                 )
             else:
-                raise
+                raise TypeError("Bad factor value: '%s'" % (str(a)))
         
         def toMatrix(self):
             return SVGTransform.SVGMatrix(self.sx, 0, 0, self.sy, 0, 0)

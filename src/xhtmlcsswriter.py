@@ -4,12 +4,13 @@
 __license__     = 'MIT'
 __author__      = 'Alberto Pettarin (alberto@albertopettarin.it)'
 __copyright__   = '2014 Alberto Pettarin (alberto@albertopettarin.it)'
-__version__     = 'v0.0.1'
-__date__        = '2014-07-10'
+__version__     = 'v0.0.2'
+__date__        = '2014-07-14'
 __description__ = 'Produce HTML+CSS output from parsed SVG'
 
 ### BEGIN changelog ###
 #
+# 0.0.2 2014-07-14 Read config from file, added JPEG output 
 # 0.0.1 2014-07-10 Initial release
 #
 ### END changelog ###
@@ -336,8 +337,8 @@ class XHTMLCSSWriter(SVGHandler):
         
         # add style
         svg_style = ""
-        svg_style += "top:%dpx;" % (self.__options["pageoffsettop"])
-        svg_style += "left:%dpx;" % (self.__options["pageoffsetleft"])
+        svg_style += "top:%dpx;" % (int(self.__options["pageoffsettop"]))
+        svg_style += "left:%dpx;" % (int(self.__options["pageoffsetleft"]))
         svg_style += "width:%.03fpx;" % (self.__page_width)
         svg_style += "height:%.03fpx;" % (self.__page_height)
         #svg_style += "position:absolute;"
@@ -694,12 +695,22 @@ class XHTMLCSSWriter(SVGHandler):
             elem_id = elem.id
             self._exported_file_names[name] = elem_id
             od = self.__options["outputdirectory"]
-            relative_file_path = name + ".png"
+            relative_file_path = name
             if (len(self.__options["rasterimagesubdirectory"]) > 0):
                 relative_file_path = os.path.join(self.__options["rasterimagesubdirectory"], relative_file_path)
             absolute_file_path = os.path.join(od, relative_file_path)
-            rx, ry = RasterWriter.exportRaster(absolute_file_path, elem_id, self.__input_svg_path, self.__options["rasterlayerboundingbox"], self.__log)
-            self.__log("RW: Exporting id '%s' to file '%s' ... completed" % (elem_id, absolute_file_path))
+            raster_format = self.__options["rasterformat"]
+            rx, ry = RasterWriter.exportRaster(
+                    absolute_file_path,
+                    elem_id,
+                    self.__input_svg_path, 
+                    self.__options["rasterlayerboundingbox"],
+                    raster_format,
+                    self.__log
+            )
+            relative_file_path += "." + raster_format 
+            absolute_file_path += "." + raster_format 
+            self.__log("XW: Exporting id '%s' to file '%s' ... completed" % (elem_id, absolute_file_path))
              
             # create XHTML <div> structure
             css = CSSStyle()
@@ -720,6 +731,7 @@ class XHTMLCSSWriter(SVGHandler):
             self._css(id=name, style=css)
             parent_id = self._get_parent_id(elem)
             self._html({"tag": "div", "id": name, "parent": parent_id})
+            # TODO set alt text
             self._html({"tag": "img", "id": name + "-img", "src": relative_file_path, "alt": "", "parent": name})
         else:
             # either not a layer or we are in vector mode

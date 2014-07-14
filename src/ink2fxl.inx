@@ -5,7 +5,7 @@
   <dependency type="executable" location="extensions">ink2fxl.py</dependency>
   <param name="zzz1" type="notebook">
     <page name="Export" _gui-text="Export">
-    <param name="outputformat" type="enum" _gui-text="Output format">
+      <param name="outputformat" type="enum" _gui-text="Output format">
         <_item value="vector">Vector: XHTML(+SVG)+CSS</_item>
         <_item value="mixed">Mixed: XHTML+raster</_item>
         <_item value="raster">Raster only</_item>
@@ -14,15 +14,16 @@
       <param name="exporthiddenlayers" type="boolean" _gui-text="Export hidden layers">true</param>
       <param name="renameidattributes" type="boolean" _gui-text="Rename id attributes">false</param>
       <param name="uselayerlabels" type="boolean" _gui-text="Use Inkscape layer label instead of id">true</param>
-      <!--<param name="gheuristic" type="boolean" _gui-text="Consider svg.g as a layer">false</param>-->
+      <!--<param name="gheuristic" type="boolean" _gui-text="Detect layers using g heuristic">false</param>-->
     </page>
     <page name="Raster" _gui-text="Raster">
-      <param name="rasterformat" type="enum" _gui-text="Raster format (NOTE: ignored)">
-        <_item value="png">PNG</_item>
-        <_item value="jpeg">JPEG</_item>
+      <param name="rasterformat" type="enum" _gui-text="Raster format">
+        <_item value="png">PNG (.png)</_item>
+        <_item value="jpg">JPEG (.jpg)</_item>
+        <_item value="jpeg">JPEG (.jpeg)</_item>
       </param>
-      <param name="rasterlayerboundingbox" type="boolean" _gui-text="Crop layer to bounding box">true</param>
-      <param name="rasterimagesubdirectory" type="string" _gui-text="Output images in subdirectory"></param>
+      <param name="rasterlayerboundingbox" type="boolean" _gui-text="Crop each layer to bounding box">true</param>
+      <param name="rasterimagesubdirectory" type="string" _gui-text="Output images in subdirectory (or empty)"></param>
     </page>
     <page name="Vector" _gui-text="Vector">
       <param name="outputxhtmlfile" type="string" _gui-text="Output XHTML file">index.xhtml</param>
@@ -41,7 +42,8 @@
       <param name="pageborder" type="boolean" _gui-text="Page border">true</param>
       <param name="pageborderstyle" type="string" _gui-text="Page border CSS">black 5px solid</param>
     </page>
-    <page name="Log" _gui-text="Log">
+    <page name="Log" _gui-text="Config/Log">
+      <param name="config" type="string" _gui-text="Config file (or empty)"></param>
       <param name="logfile" type="string" _gui-text="Write log to file"></param>
       <param name="logdelete" type="boolean" _gui-text="Delete log after success">true</param>
     </page>
@@ -50,7 +52,7 @@
 ink2fxl
 
 Version
-  v0.0.1 2014-07-09
+  v0.0.2 2014-07-14
   github.com/pettarin/ink2fxl/
 
 Author

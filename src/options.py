@@ -4,21 +4,24 @@
 __license__     = 'MIT'
 __author__      = 'Alberto Pettarin (alberto@albertopettarin.it)'
 __copyright__   = '2014 Alberto Pettarin (alberto@albertopettarin.it)'
-__version__     = 'v0.0.1'
-__date__        = '2014-07-10'
+__version__     = 'v0.0.2'
+__date__        = '2014-07-14'
 __description__ = 'Command line options, shared by svg2htmlcss and ink2fxl'
 
 ### BEGIN changelog ###
 #
+# 0.0.2 2014-07-14 Read config from file, added JPEG output 
 # 0.0.1 2014-07-10 Initial release
 #
 ### END changelog ###
 
 class Options():
 
-    # NOTE change the path of inkscape, depending on your OS, e.g. to 
+    # NOTE change the following paths, depending on your OS, e.g. to 
     # __inkscape_path = "/usr/bin/inkscape"
+    # __convert_path = "/usr/bin/convert"
     __inkscape_path = "inkscape"
+    __convert_path = "convert"
 
     __options = [
         ### EXPORT OPTIONS ###
@@ -71,18 +74,17 @@ class Options():
             "type": "inkbool",
             "dest": "gheuristic",
             "default": "false",
-            "help": "Consider <g> direct child of <svg> as a layer (IGNORED)"
+            "help": "Detect layers using <svg>-><g> heuristic (IGNORED)"
         },
         ### RASTER OPTIONS ###
         {
-            # TODO currently ignored
             "short": None,
             "long": "--rasterformat",
             "type": "string",
             "dest": "rasterformat",
             "default": "png",
-            "help": "Raster format [png|jpeg] (IGNORED)",
-            "allowedValues": ["png", "jpeg"]
+            "help": "Raster format [png|jpg|jpeg]",
+            "allowedValues": ["png", "jpg", "jpeg"]
         },
         {
             "short": "-b",
@@ -225,13 +227,12 @@ class Options():
         },
         ### CONFIG OPTIONS
         {
-            # TODO currently ignored
             "short": "-c",
             "long": "--config",
             "type": "string",
             "dest": "config",
             "default": "",
-            "help": "Load configuration from file (IGNORED)"
+            "help": "Load configuration from file"
         },
         # the next ones are dummy needed for the Inkscape plugin window
         {
@@ -240,7 +241,7 @@ class Options():
             "type": "string",
             "dest": "zzz1",
             "default": "DUMMY",
-            "help": "BUT DO NOT REMOVE ME" 
+            "help": "" 
         },
         {
             "short": None,
@@ -248,7 +249,7 @@ class Options():
             "type": "string",
             "dest": "zzz2",
             "default": "DUMMY",
-            "help": "BUT DO NOT REMOVE ME" 
+            "help": "" 
         }
     ]
 
@@ -257,13 +258,53 @@ class Options():
         return cls.__inkscape_path
 
     @classmethod
+    def getConvertPath(cls):
+        return cls.__convert_path
+
+    @classmethod
     def getOptions(cls):
         return cls.__options
+
+    # read config from file
+    # by reading lines formatted like
+    # key=value
+    # where key is the dest field of __options above
+    # Other lines are ignored
+    #
+    # Example:
+    # outputformat=raster
+    # outputdirectory=/tmp/
+    #
+    @classmethod
+    def readConfigFromFile(cls, config_file_path):
+        opt = {}
+        try:
+            f = open(config_file_path, "r")
+            config = f.read()
+            f.close()
+            for line in config.splitlines():
+                parts = line.split("=")
+                if (len(parts) == 2):
+                    k = parts[0].strip()
+                    v = parts[1].strip()
+                    opt[k] = v
+        except:
+            pass
+        return opt
 
     # convert options (from optparse) to a regular dict
     @classmethod
     def convertToDict(cls, options): 
         options = vars(options)
+        
+        # if -c or --config has been specified,
+        # read parameters from it
+        # and override
+        if (("config" in options) and (len(options["config"]) > 0)):
+            opt = cls.readConfigFromFile(options["config"])
+            for k in opt.keys():
+                options[k] = opt[k]
+
         for o in cls.getOptions():
             if (o["type"] == "inkbool"):
                 k = o["dest"]

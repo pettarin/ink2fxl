@@ -4,12 +4,13 @@
 __license__     = 'MIT'
 __author__      = 'Alberto Pettarin (alberto@albertopettarin.it)'
 __copyright__   = '2014 Alberto Pettarin (alberto@albertopettarin.it)'
-__version__     = 'v0.0.1'
-__date__        = '2014-07-10'
+__version__     = 'v0.0.2'
+__date__        = '2014-07-14'
 __description__ = 'Produce raster output from parsed SVG'
 
 ### BEGIN changelog ###
 #
+# 0.0.2 2014-07-14 Read config from file, added JPEG output 
 # 0.0.1 2014-07-10 Initial release
 #
 ### END changelog ###
@@ -88,17 +89,25 @@ class RasterWriter(SVGHandler):
         for k in self._exported_file_names.keys():
             elem_id = self._exported_file_names[k]
             od = self.__options["outputdirectory"]
-            relative_file_path = k + ".png"
+            relative_file_path = k
             if (len(self.__options["rasterimagesubdirectory"]) > 0):
                 relative_file_path = os.path.join(self.__options["rasterimagesubdirectory"], relative_file_path)
             absolute_file_path = os.path.join(od, relative_file_path)
-            self.__log("RW: Exporting id '%s' to file '%s' ..." % (elem_id, absolute_file_path))
-            rx, ry = RasterWriter.exportRaster(absolute_file_path, elem_id, self.__input_svg_path, self.__options["rasterlayerboundingbox"], self.__log) 
-            self.__log("RW: Exporting id '%s' to file '%s' ... completed" % (elem_id, absolute_file_path))
+            raster_format = self.__options["rasterformat"]
+            self.__log("RW: Exporting id '%s' to file '%s.%s' ..." % (elem_id, absolute_file_path, raster_format))
+            rx, ry = RasterWriter.exportRaster(
+                    absolute_file_path,
+                    elem_id,
+                    self.__input_svg_path,
+                    self.__options["rasterlayerboundingbox"],
+                    raster_format, 
+                    self.__log
+            )
+            self.__log("RW: Exporting id '%s' to file '%s.%s' ... completed" % (elem_id, absolute_file_path, raster_format))
 
     # exports the element with given id in the input SVG to a raster image
     @classmethod
-    def exportRaster(cls, dest, elem_id, input_svg_path, bb, log):
+    def exportRaster(cls, dest, elem_id, input_svg_path, crop_to_bounding_box, raster_format, log):
         # TODO error handling
         try:
             # make sure the output directory exists
@@ -108,28 +117,33 @@ class RasterWriter(SVGHandler):
                 if (log):
                     log("RW: Creating directory '%s'" % (str(output_dir_path)))
             
+            # we need to export to PNG from Inkscape first 
+            dest_png = dest + ".png"
+
             # TODO hidden layers are not exported correctly: they still appear as hidden
-            # TODO JPEG output?
             # TODO use direct bindings?
             # call: $ inkscape --export-png=DEST --export-id=LAYER_ID --export-id-only ORIGINAL_FILE.SVG
             parameters = [
+                    Options.getInkscapePath(),
                     cls.INKSCAPE_WITHOUT_GUI,
-                    cls.INKSCAPE_EXPORT_PNG, dest,
+                    cls.INKSCAPE_EXPORT_PNG, dest_png,
                     cls.INKSCAPE_EXPORT_ID, elem_id,
                     cls.INKSCAPE_EXPORT_ID_ONLY
             ]
-            if (not bb):
-                # export the whole page, not just the bb
+            if (not crop_to_bounding_box):
+                # export the whole page, not just the bounding box
                 parameters.append(cls.INKSCAPE_EXPORT_AREA_PAGE)
-            
+            parameters.append(input_svg_path)
             if (log):
-                log("RW: Calling '%s' with parameters '%s'" % (Options.getInkscapePath(), str(parameters)))
-            p = subprocess.Popen([Options.getInkscapePath()] + parameters + [input_svg_path],
+                log("RW: Calling Inkscape with parameters '%s'" % (str(parameters)))
+            p = subprocess.Popen(parameters,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
             (stdoutdata, stderrdata) = p.communicate()
-            
+            p.stdout.close()
+            p.stdin.close()
+            p.stderr.close()
             # TODO this is very fragile
             rx = 0
             ry = 0
@@ -138,13 +152,33 @@ class RasterWriter(SVGHandler):
                 if (m):
                     rx = float(m.group(1))
                     ry = float(m.group(4))
-            p.stdout.close()
-            p.stdin.close()
-            p.stderr.close()
-            
             if (log):
                 log("RW: Coordinates for id '%s' rx: %f ry: %f" % (elem_id, rx, ry))
             
+            if (raster_format in ["jpg", "jpeg"]):
+                # convert to JPEG
+                dest_jpg = dest + "." + raster_format
+                # TODO use direct bindings?
+                # TODO do we need to pass other parameters?
+                convert_parameters = [
+                        Options.getConvertPath(),
+                        dest_png,
+                        dest_jpg
+                ]
+                if (log):
+                    log("RW: Calling convert with parameters '%s'" % (str(convert_parameters)))
+                p = subprocess.Popen(convert_parameters,
+                    stdout=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
+                (stdoutdata, stderrdata) = p.communicate()
+                p.stdout.close()
+                p.stdin.close()
+                p.stderr.close()
+
+                # delete PNG
+                os.remove(dest_png)
+
             return [rx, ry]
         except:
             # TODO error handling

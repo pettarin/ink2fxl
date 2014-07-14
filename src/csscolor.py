@@ -4,12 +4,13 @@
 __license__     = 'MIT'
 __author__      = 'Alberto Pettarin (alberto@albertopettarin.it)'
 __copyright__   = '2014 Alberto Pettarin (alberto@albertopettarin.it)'
-__version__     = 'v0.0.1'
-__date__        = '2014-07-10'
+__version__     = 'v0.0.2'
+__date__        = '2014-07-14'
 __description__ = 'Represent a CSS color'
 
 ### BEGIN changelog ###
 #
+# 0.0.2 2014-07-14 Fixed old-style raise
 # 0.0.1 2014-07-10 Initial release, nearly verbatim from https://github.com/shogo82148/svg2css
 #
 ### END changelog ###
@@ -28,7 +29,7 @@ class CSSColor:
                 self.b = int(m.group(3), 16)
                 self.a = 1.0
                 return
-            raise
+            raise TypeError("Bad color value: '%s'" % (larg[0]))
         elif (len(larg) == 3):
             # (r,g,b) tuple
             self.r = int(larg[0])
