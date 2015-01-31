@@ -3,13 +3,14 @@
 
 __license__     = 'MIT'
 __author__      = 'Alberto Pettarin (alberto@albertopettarin.it)'
-__copyright__   = '2014 Alberto Pettarin (alberto@albertopettarin.it)'
-__version__     = 'v0.0.2'
-__date__        = '2014-07-14'
+__copyright__   = '2014-2015 Alberto Pettarin (alberto@albertopettarin.it)'
+__version__     = 'v0.0.3'
+__date__        = '2015-01-31'
 __description__ = 'Produce raster output from parsed SVG'
 
 ### BEGIN changelog ###
 #
+# 0.0.3 2015-01-31 Replace "," with "." after matching INKSCAPE_AREA_PATTERN (fixes issue #2)
 # 0.0.2 2014-07-14 Read config from file, added JPEG output 
 # 0.0.1 2014-07-10 Initial release
 #
@@ -150,8 +151,8 @@ class RasterWriter(SVGHandler):
             for l in stdoutdata.splitlines():
                 m = re.match(cls.INKSCAPE_AREA_PATTERN, l)
                 if (m):
-                    rx = float(m.group(1))
-                    ry = float(m.group(4))
+                    rx = float(m.group(1).replace(",", "."))
+                    ry = float(m.group(4).replace(",", "."))
             if (log):
                 log("RW: Coordinates for id '%s' rx: %f ry: %f" % (elem_id, rx, ry))
             

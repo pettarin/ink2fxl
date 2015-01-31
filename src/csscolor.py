@@ -3,9 +3,9 @@
 
 __license__     = 'MIT'
 __author__      = 'Alberto Pettarin (alberto@albertopettarin.it)'
-__copyright__   = '2014 Alberto Pettarin (alberto@albertopettarin.it)'
-__version__     = 'v0.0.2'
-__date__        = '2014-07-14'
+__copyright__   = '2014-2015 Alberto Pettarin (alberto@albertopettarin.it)'
+__version__     = 'v0.0.3'
+__date__        = '2015-01-31'
 __description__ = 'Represent a CSS color'
 
 ### BEGIN changelog ###

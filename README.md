@@ -2,8 +2,8 @@
 
 **ink2fxl** converts Inkscape SVG files to XHTML+(SVG)+CSS, XHTML+raster (layer-wise), or raster-only (layer-wise).
 
-* Version: 0.0.2
-* Date: 2014-07-14
+* Version: 0.0.3
+* Date: 2015-01-31
 * Developer: [Alberto Pettarin](http://www.albertopettarin.it/) ([contact](http://www.albertopettarin.it/contact.html))
 * License: the MIT License (MIT), see LICENSE.md
 
@@ -213,5 +213,6 @@ on Debian Linux and Mac OS X.
 * _Paolo Carnovalini_ for early testing
 * The plugin concept has been inspired by [SAWS](https://code.google.com/p/saws/)
 * The SVG parser has been extended/refactored from [svg2css](https://github.com/shogo82148/svg2css)
+* _pedrosacramento_ for reporting issue #2
 
 [![Analytics](https://ga-beacon.appspot.com/UA-52776738-1/ink2fxl)](http://www.albertopettarin.it)
